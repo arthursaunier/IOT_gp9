@@ -1,4 +1,5 @@
 import radio
+from test import decrypt
 
 class RadioProtocol:
     def __init__(self, address):
@@ -6,7 +7,7 @@ class RadioProtocol:
         return None
 
     def calculateChecksum(self, message):
-        print(len(message))
+        #print(len(message))
         nleft = len(message)
         sum = 0
         pos = 0
@@ -15,12 +16,12 @@ class RadioProtocol:
             pos = pos + 2
             nleft = nleft - 2
         if nleft == 1:
-            print(len(message))
+            #print(len(message))
             test = ord(message[pos]) * 256
-            print(type(test))
-            print(type(sum))
+            #print(type(test))
+            #print(type(sum))
             sum = sum + test
-            print(type(sum))
+            #print(type(sum))
 
         sum = (sum >> 16) + (sum & 0xFFFF)
         sum += (sum >> 16)
@@ -44,11 +45,12 @@ class RadioProtocol:
             stuff['lenMess'] = tabRes[1]
             stuff['addrDest'] = tabRes[2]
             stuff['message'] = self.decrypt(tabRes[3])
-            print(stuff['message'])
+            #print(stuff['message'])
             stuff['receivedCheckSum'] = tabRes[4]
-            if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(stuff['message'])):
+            message = decrypt(stuff['message'])
+            if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(message)):
                 if self.addr == int(stuff['addrDest']):
-                    return stuff['message']
+                    return message
             return -1
     
     def verifyCheckSum(self, checkSum, receivedCheckSum):
@@ -58,20 +60,25 @@ class RadioProtocol:
             return False
 
     def encrypt(self, message):
-        print(len(message))
+        #print(len(message))
         encrypted_message = [0]*len(message) 
-        for i in range (len(message)-1):
+        for i in range (len(message)):
             ascii_char = ord(message[i]) + 4
-            
             encrypted_message[i] = ascii_char
-        print(len(encrypted_message))
+        #print(len(encrypted_message))
         return encrypted_message
 
     def decrypt(self, message):
         #print(len(message))
         decrypted_message = [0]*(len(message))
-        for i in range (len(message)-1):
-            encrypted_char = chr(ord(message[i])-4)
+        for i in range (len(message)):
+            encrypted_char = chr(message[i]-4)
             decrypted_message[i] = encrypted_char
-        return decrypted_message
+        return convert(decrypted_message)
 
+    #convert list of char to string
+    def convert(s):
+        new = ""
+        for x in s:
+            new += x 
+        return new
