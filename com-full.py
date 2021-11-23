@@ -19,6 +19,4 @@ while True:
             reseau.sendPacket("TL", 1)
         else if(content == 'LT'):
             reseau.sendPacket("LT", 1)
-    #if button_a.is_pressed():
-    #    reseau.sendPacket("Salut", 1)
     sleep(1000)
