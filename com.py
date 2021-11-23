@@ -2,8 +2,6 @@ from microbit import *
 import radio
 import reseau
 
-
-
 radio.config(group=2)
 radio.on()
 reseau = reseau.RadioProtocol(2)
