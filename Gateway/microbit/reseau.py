@@ -6,7 +6,7 @@ class RadioProtocol:
         return None
 
     def calculateChecksum(self, message):
-        print(message)
+        print("message chksm", message)
         nleft = len(message)
         sum = 0
         pos = 0
@@ -26,18 +26,20 @@ class RadioProtocol:
         sum += (sum >> 16)
         sum = (~sum & 0xFFFF)
 
-        #print(sum)
+        print("valeur checksm", sum)
         return sum
 
     def sendPacket(self, message, addrDest):
         if len(message)<251:
             encrypted_message = self.encrypt(message)
-            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(encrypted_message) + "|" + str(self.calculateChecksum(str(encrypted_message))))
+            print(str(self.calculateChecksum(str(encrypted_message))))
+            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" +  str(self.calculateChecksum(str(encrypted_message))) + "|" + str(encrypted_message) + "")
 
     def receivePacket(self, packet):
         if packet is None:
             return 0
         else:
+            print(packet)
             tabRes = packet.format(1).split("|")
             if len(tabRes) > 5:
                 return -1
@@ -46,8 +48,9 @@ class RadioProtocol:
             stuff['lenMess'] = tabRes[1]
             stuff['addrDest'] = tabRes[2]
             stuff['message'] = tabRes[3]
-            #print(stuff['message'])
+            print("message recu", stuff['message'])
             stuff['receivedCheckSum'] = tabRes[4]
+            print("chksm recu", stuff['receivedCheckSum'])
             if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(stuff['message'])):
                 if self.addr == int(stuff['addrDest']):
                     message = self.decrypt(stuff['message'])
@@ -55,6 +58,8 @@ class RadioProtocol:
             return -1
     
     def verifyCheckSum(self, checkSum, receivedCheckSum):
+        print(checkSum)
+        print(receivedCheckSum)
         if int(checkSum) == receivedCheckSum:
             return True
         else:
