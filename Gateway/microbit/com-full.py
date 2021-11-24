@@ -12,7 +12,6 @@ while True:
     message = reseau.receivePacket(radio.receive_bytes())
     if message:
         uart.write(message)
-        #display.scroll(message)
     if uart.any():
         content = uart.read()
         if(content == 'TL'):
