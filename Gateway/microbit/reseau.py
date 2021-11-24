@@ -30,7 +30,7 @@ class RadioProtocol:
 
     def sendPacket(self, message, addrDest):
         if len(message)<251:
-            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + self.encrypt(message) + "|" + str(self.calculateChecksum(message)))
+            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(self.encrypt(message)) + "|" + str(self.calculateChecksum(message)))
 
     def receivePacket(self, packet):
         if packet is None:
@@ -69,9 +69,13 @@ class RadioProtocol:
 
     def decrypt(self, message):
         print(type(message))
+        message = message.replace("[","")
+        message = message.replace("]","")
+        print(message)
+        message = message.split(",")
+        print(message)
         decrypted_message = [0]*(len(message))
         for i in range (len(message)):
-            #inter = int(message[i]-4)
             encrypted_char = chr(message[i]-4)
             decrypted_message[i] = encrypted_char
         return convert(decrypted_message)
