@@ -42,25 +42,29 @@ public class MainActivity extends AppCompatActivity {
         TextView TView2 = findViewById(R.id.textView2);
 
         try {
-            address = InetAddress.getByName(IP);
             UDPSocket = new DatagramSocket();
             UDPSocketRec = new DatagramSocket();
-        } catch (SocketException | UnknownHostException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
         }
 
         button1.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (EText1.getText().toString().isEmpty()){
-                    IP = "127.0.0.1";
-                }else{
-                    IP = EText1.getText().toString();
-                }
-                if (EText2.getText().toString().isEmpty()){
-                    PORT = 8080;
-                }else{
-                    PORT = Integer.parseInt(EText2.getText().toString());
+                try {
+                    if (EText1.getText().toString().isEmpty()){
+                        IP = "127.0.0.1";
+                    }else{
+                        IP = EText1.getText().toString();
+                    }
+                    if (EText2.getText().toString().isEmpty()){
+                        PORT = 8080;
+                    }else{
+                        PORT = Integer.parseInt(EText2.getText().toString());
+                    }
+                    address = InetAddress.getByName(IP);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
                 }
                 String message = "TL";
                 DatagramPacket dp = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
@@ -81,15 +85,20 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (EText1.getText().toString().isEmpty()){
-                    IP = "127.0.0.1";
-                }else{
-                    IP = EText1.getText().toString();
-                }
-                if (EText2.getText().toString().isEmpty()){
-                    PORT = 8080;
-                }else{
-                    PORT = Integer.parseInt(EText2.getText().toString());
+                try {
+                    if (EText1.getText().toString().isEmpty()){
+                        IP = "127.0.0.1";
+                    }else{
+                        IP = EText1.getText().toString();
+                    }
+                    if (EText2.getText().toString().isEmpty()){
+                        PORT = 8080;
+                    }else{
+                        PORT = Integer.parseInt(EText2.getText().toString());
+                    }
+                    address = InetAddress.getByName(IP);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
                 }
                 String message = "LT";
                 DatagramPacket dp = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
