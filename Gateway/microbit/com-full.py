@@ -1,7 +1,6 @@
 from microbit import *
 import radio
 import reseau
-import uart
 
 radio.config(length=251, group=64)
 radio.on()
@@ -12,10 +11,11 @@ while True:
     message = reseau.receivePacket(radio.receive_bytes())
     if message:
         uart.write(message)
+        display.scroll(message)
     if uart.any():
         content = uart.read()
         if(content == 'TL'):
             reseau.sendPacket("TL", 1)
-        else if(content == 'LT'):
+        elif(content == 'LT'):
             reseau.sendPacket("LT", 1)
     sleep(1000)
