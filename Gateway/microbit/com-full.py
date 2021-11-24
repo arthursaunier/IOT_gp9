@@ -3,7 +3,7 @@ import radio
 import reseau
 import uart
 
-radio.config(group=2)
+radio.config(length=251, group=64)
 radio.on()
 reseau = reseau.RadioProtocol(2)
 uart.init(baudrate=115200, bits=8, parity=None, stop=1, tx=None, rx=None)
