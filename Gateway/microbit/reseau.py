@@ -1,5 +1,4 @@
 import radio
-from test import decrypt
 
 class RadioProtocol:
     def __init__(self, address):
