@@ -68,10 +68,11 @@ class RadioProtocol:
         return encrypted_message
 
     def decrypt(self, message):
-        #print(len(message))
+        print(message)
         decrypted_message = [0]*(len(message))
         for i in range (len(message)):
-            encrypted_char = chr(message[i]-4)
+            inter = message[i]-4
+            encrypted_char = chr(inter)
             decrypted_message[i] = encrypted_char
         return convert(decrypted_message)
 
