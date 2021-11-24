@@ -32,8 +32,7 @@ class RadioProtocol:
     def sendPacket(self, message, addrDest):
         if len(message)<251:
             encrypted_message = self.encrypt(message)
-            print(str(self.calculateChecksum(str(encrypted_message))))
-            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" +  str(self.calculateChecksum(str(encrypted_message))) + "|" + str(encrypted_message) + "")
+            radio.send_bytes(str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(encrypted_message)+ "|" + str(self.calculateChecksum(str(encrypted_message))))
 
     def receivePacket(self, packet):
         if packet is None:
