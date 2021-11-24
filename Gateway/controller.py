@@ -9,7 +9,7 @@ import socketserver
 import serial
 import threading
 
-HOST           = "0.0.0.0"
+HOST           = "192.168.3.118"
 UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
 FILENAME        = "values.txt"
@@ -56,7 +56,7 @@ def initUART():
         ser.rtscts = False     #disable hardware (RTS/CTS) flow control
         ser.dsrdtr = False       #disable hardware (DSR/DTR) flow control
         #ser.writeTimeout = 0     #timeout for write
-        print 'Starting Up Serial Monitor'
+        print ('Starting Up Serial Monitor')
         try:
                 ser.open()
         except serial.SerialException:
