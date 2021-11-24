@@ -6,7 +6,7 @@ class RadioProtocol:
         return None
 
     def calculateChecksum(self, message):
-        print("message chksm", message)
+        #print("message chksm", message)
         nleft = len(message)
         sum = 0
         pos = 0
@@ -26,7 +26,7 @@ class RadioProtocol:
         sum += (sum >> 16)
         sum = (~sum & 0xFFFF)
 
-        print("valeur checksm", sum)
+        #print("valeur checksm", sum)
         return sum
 
     def sendPacket(self, message, addrDest):
@@ -47,9 +47,9 @@ class RadioProtocol:
             stuff['lenMess'] = tabRes[1]
             stuff['addrDest'] = tabRes[2]
             stuff['message'] = tabRes[3]
-            print("message recu", stuff['message'])
+            #print("message recu", stuff['message'])
             stuff['receivedCheckSum'] = tabRes[4]
-            print("chksm recu", stuff['receivedCheckSum'])
+            #print("chksm recu", stuff['receivedCheckSum'])
             if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(stuff['message'])):
                 if self.addr == int(stuff['addrDest']):
                     message = self.decrypt(stuff['message'])
@@ -57,8 +57,8 @@ class RadioProtocol:
             return -1
     
     def verifyCheckSum(self, checkSum, receivedCheckSum):
-        print(checkSum)
-        print(receivedCheckSum)
+        #print(checkSum)
+        #print(receivedCheckSum)
         if int(checkSum) == receivedCheckSum:
             return True
         else:
@@ -81,13 +81,13 @@ class RadioProtocol:
         return encrypted_message
 
     def decrypt(self, message):
-        print(type(message))
+        #print(type(message))
         message = message.replace("[","")
         message = message.replace("]","")
         message = message.replace(" ","")
-        print(message)
+        #print(message)
         message = message.split(",")
-        print(message)
+        #print(message)
         message = list(map(int,message))
         decrypted_message = [0]*(len(message))
         for i in range (len(message)):
