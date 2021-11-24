@@ -1,5 +1,4 @@
 import radio
-from test import decrypt
 
 class RadioProtocol:
     def __init__(self, address):
@@ -7,7 +6,7 @@ class RadioProtocol:
         return None
 
     def calculateChecksum(self, message):
-        #print(len(message))
+        #print("message chksm", message)
         nleft = len(message)
         sum = 0
         pos = 0
@@ -27,16 +26,19 @@ class RadioProtocol:
         sum += (sum >> 16)
         sum = (~sum & 0xFFFF)
 
+        #print("valeur checksm", sum)
         return sum
 
     def sendPacket(self, message, addrDest):
         if len(message)<251:
-            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(self.encrypt(message)) + "|" + str(self.calculateChecksum(message)))
+            encrypted_message = self.encrypt(message)
+            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(encrypted_message)+ "|" + str(self.calculateChecksum(str(encrypted_message))))
 
     def receivePacket(self, packet):
         if packet is None:
             return 0
         else:
+            print(packet)
             tabRes = packet.format(1).split("|")
             if len(tabRes) > 5:
                 return -1
@@ -44,20 +46,30 @@ class RadioProtocol:
             stuff['addrInc'] = tabRes[0]
             stuff['lenMess'] = tabRes[1]
             stuff['addrDest'] = tabRes[2]
-            stuff['message'] = self.decrypt(tabRes[3])
-            #print(stuff['message'])
+            stuff['message'] = tabRes[3]
+            #print("message recu", stuff['message'])
             stuff['receivedCheckSum'] = tabRes[4]
-            message = decrypt(stuff['message'])
-            if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(message)):
+            #print("chksm recu", stuff['receivedCheckSum'])
+            if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(stuff['message'])):
                 if self.addr == int(stuff['addrDest']):
+                    message = self.decrypt(stuff['message'])
                     return message
             return -1
     
     def verifyCheckSum(self, checkSum, receivedCheckSum):
+        #print(checkSum)
+        #print(receivedCheckSum)
         if int(checkSum) == receivedCheckSum:
             return True
         else:
             return False
+
+    #convert list of char to string
+    def convert(self, s):
+        new = ""
+        for x in s:
+            new += x 
+        return new
 
     def encrypt(self, message):
         #print(len(message))
@@ -69,16 +81,18 @@ class RadioProtocol:
         return encrypted_message
 
     def decrypt(self, message):
-        #print(len(message))
+        #print(type(message))
+        message = message.replace("[","")
+        message = message.replace("]","")
+        message = message.replace(" ","")
+        #print(message)
+        message = message.split(",")
+        #print(message)
+        message = list(map(int,message))
         decrypted_message = [0]*(len(message))
         for i in range (len(message)):
             encrypted_char = chr(message[i]-4)
             decrypted_message[i] = encrypted_char
-        return convert(decrypted_message)
+        return self.convert(decrypted_message)
 
-    #convert list of char to string
-    def convert(s):
-        new = ""
-        for x in s:
-            new += x 
-        return new
+    
