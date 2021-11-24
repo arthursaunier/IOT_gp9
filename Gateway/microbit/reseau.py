@@ -6,7 +6,7 @@ class RadioProtocol:
         return None
 
     def calculateChecksum(self, message):
-        #print(len(message))
+        print(message)
         nleft = len(message)
         sum = 0
         pos = 0
@@ -26,11 +26,13 @@ class RadioProtocol:
         sum += (sum >> 16)
         sum = (~sum & 0xFFFF)
 
+        #print(sum)
         return sum
 
     def sendPacket(self, message, addrDest):
         if len(message)<251:
-            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(self.encrypt(message)) + "|" + str(self.calculateChecksum(message)))
+            encrypted_message = self.encrypt(message)
+            radio.send_bytes("" + str(self.addr) + "|" + str(len(message)) + "|" + str(addrDest) + "|" + str(encrypted_message) + "|" + str(self.calculateChecksum(str(encrypted_message))))
 
     def receivePacket(self, packet):
         if packet is None:
@@ -43,12 +45,12 @@ class RadioProtocol:
             stuff['addrInc'] = tabRes[0]
             stuff['lenMess'] = tabRes[1]
             stuff['addrDest'] = tabRes[2]
-            stuff['message'] = self.decrypt(tabRes[3])
+            stuff['message'] = tabRes[3]
             #print(stuff['message'])
             stuff['receivedCheckSum'] = tabRes[4]
-            message = decrypt(stuff['message'])
-            if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(message)):
+            if self.verifyCheckSum(stuff['receivedCheckSum'], self.calculateChecksum(stuff['message'])):
                 if self.addr == int(stuff['addrDest']):
+                    message = self.decrypt(stuff['message'])
                     return message
             return -1
     
@@ -57,6 +59,13 @@ class RadioProtocol:
             return True
         else:
             return False
+
+    #convert list of char to string
+    def convert(self, s):
+        new = ""
+        for x in s:
+            new += x 
+        return new
 
     def encrypt(self, message):
         #print(len(message))
@@ -71,6 +80,7 @@ class RadioProtocol:
         print(type(message))
         message = message.replace("[","")
         message = message.replace("]","")
+        message = message.replace(" ","")
         print(message)
         message = message.split(",")
         print(message)
@@ -78,11 +88,6 @@ class RadioProtocol:
         for i in range (len(message)):
             encrypted_char = chr(message[i]-4)
             decrypted_message[i] = encrypted_char
-        return convert(decrypted_message)
+        return self.convert(decrypted_message)
 
-    #convert list of char to string
-    def convert(s):
-        new = ""
-        for x in s:
-            new += x 
-        return new
+    
