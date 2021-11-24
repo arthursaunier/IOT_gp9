@@ -52,8 +52,16 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IP = EText1.getText().toString();
-                PORT = Integer.parseInt(EText2.getText().toString());
+                if (EText1.getText().toString().isEmpty()){
+                    IP = "127.0.0.1";
+                }else{
+                    IP = EText1.getText().toString();
+                }
+                if (EText2.getText().toString().isEmpty()){
+                    PORT = 8080;
+                }else{
+                    PORT = Integer.parseInt(EText2.getText().toString());
+                }
                 String message = "TL";
                 DatagramPacket dp = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
                 Executor executor = Executors.newSingleThreadExecutor();
@@ -73,8 +81,16 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IP = EText1.getText().toString();
-                PORT = Integer.parseInt(EText2.getText().toString());
+                if (EText1.getText().toString().isEmpty()){
+                    IP = "127.0.0.1";
+                }else{
+                    IP = EText1.getText().toString();
+                }
+                if (EText2.getText().toString().isEmpty()){
+                    PORT = 8080;
+                }else{
+                    PORT = Integer.parseInt(EText2.getText().toString());
+                }
                 String message = "LT";
                 DatagramPacket dp = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
                 Executor executor = Executors.newSingleThreadExecutor();
@@ -91,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if ((String.valueOf(address) == "") || (String.valueOf(PORT) != "")){
+        if ((String.valueOf(address) != "") || (String.valueOf(PORT) != "")){
             byte[] buf = new byte[1024];
             DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
             Executor executor = Executors.newSingleThreadExecutor();
