@@ -8,7 +8,7 @@ from ssd1306_text import *
 
 initialize(pinReset = pin0)
 clear_oled()
-radio.config(group=3)
+radio.config(length=251, group=64)
 radio.on()
 reseau = reseau.RadioProtocol(1)
 
