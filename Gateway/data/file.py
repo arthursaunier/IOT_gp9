@@ -1,7 +1,7 @@
 from .log import Log, LogSystem
 
 class File(LogSystem):
-    def __init__(self, filename) -> None:
+    def __init__(self, filename):
         self.filename = f"{filename}.txt"
         self.f = open(self.filename, "w+")
 

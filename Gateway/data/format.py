@@ -2,7 +2,8 @@ class Format:
     def __init__(self):
         pass
 
-    def parse(self, str_in):
+    @staticmethod
+    def parse(str_in):
         parsed = str_in.split(":")
         dico = dict()
         dico["temperature"] = parsed[0]
