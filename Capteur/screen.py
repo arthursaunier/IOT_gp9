@@ -27,7 +27,7 @@ while True:
             affichage = 0
         elif message == 'LT':
             affichage = 1
-    if (affichage ==0):
+    if (affichage == 0):
         add_text(0, 2, "Temp : " + str(Temp) + " C")
         add_text(0, 1, "Lum : " + str(Lum) + " lm ")
     else:
