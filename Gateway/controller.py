@@ -74,7 +74,7 @@ def initUART():
 
 
 def sendUARTMessage(msg):
-    ser.write(msg)
+    ser.write(msg.encode())
     print("Message <" + msg + "> sent to micro-controller." )
 
 
