@@ -13,7 +13,6 @@ HOST           = "10.17.8.66"
 UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
 FILENAME        = "log"
-LAST_VALUE      = ""
 PACKET_END = "[END]"
 
 #log and filing
@@ -36,8 +35,11 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
                                 sendUARTMessage(data + PACKET_END)
                                 
                         elif data == "getValues()": # Sent last value received from micro-controller
-                                socket.sendto(LAST_VALUE, self.client_address) 
-                                # TODO: Create last_values_received as global variable      
+                                last_log = file.get_last_log()
+                                if last_log != None:
+                                        data = Format.reform(last_log)
+                                        socket.sendto(data, self.client_address) 
+                                     
                         else:
                                 print("Unknown message: ",data)
 
