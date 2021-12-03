@@ -9,11 +9,18 @@ import socketserver
 import serial
 import threading
 
-HOST           = "192.168.1.120"
+HOST           = "10.17.8.66"
 UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
-FILENAME        = "values.txt"
+FILENAME        = "log"
 LAST_VALUE      = ""
+
+
+#log and filing
+from data.log import Log
+from data.file import File
+file = File(FILENAME)
+from data.format import Format
 
 class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
 
@@ -74,7 +81,7 @@ def sendUARTMessage(msg):
 # Main program logic follows:
 if __name__ == '__main__':
         initUART()
-        f= open(FILENAME,"a")
+        #f= open(FILENAME,"a")
         print ('Press Ctrl-C to quit.')
 
         server = ThreadedUDPServer((HOST, UDP_PORT), ThreadedUDPRequestHandler)
@@ -88,7 +95,7 @@ if __name__ == '__main__':
                 while ser.isOpen() : 
                         # time.sleep(100)
                         if ser.in_waiting > 0:
-                                # Read data out of the buffer until a carraige return / new line is found
+                                # Read data out of the buffer until a carriage return / new line is found
                                 data_str = ser.readline()
                                 ser.flush()
 
@@ -96,12 +103,14 @@ if __name__ == '__main__':
                                 data_str = data_str.decode()
                                 if(data_str.find("[END]") != -1):
                                         data = str(data_str)[:data_str.find("[END]")]
-                                        f.write(data)
-                                        LAST_VALUE = data
-                                        print(data)
+                                        parsed = Format.parse(data)
+                                        log = Log.from_dict(parsed)
+
+                                        #sauvegarde le log ds un fichier
+                                        file.save(log)
+                                        #print(data)
         except (KeyboardInterrupt, SystemExit):
                 server.shutdown()
                 server.server_close()
-                f.close()
                 ser.close()
                 exit()
