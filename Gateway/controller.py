@@ -14,13 +14,14 @@ UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
 FILENAME        = "log"
 LAST_VALUE      = ""
-
+PACKET_END = "[END]"
 
 #log and filing
 from data.log import Log
 from data.file import File
 file = File(FILENAME)
 from data.format import Format
+
 
 class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
 
@@ -32,7 +33,7 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
         data = data.decode()
         if data != "":
                         if data in MICRO_COMMANDS: # Send message through UART
-                                sendUARTMessage(data)
+                                sendUARTMessage(data + PACKET_END)
                                 
                         elif data == "getValues()": # Sent last value received from micro-controller
                                 socket.sendto(LAST_VALUE, self.client_address) 
