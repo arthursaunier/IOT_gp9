@@ -34,7 +34,7 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
                         if data in MICRO_COMMANDS: # Send message through UART
                                 sendUARTMessage(data + PACKET_END)
                                 
-                        elif data == "getValues()": # Sent last value received from micro-controller
+                        elif data == "update": # Sent last value received from micro-controller
                                 last_log = file.get_last_log()
                                 if last_log != None:
                                         data = Format.reform(last_log)
