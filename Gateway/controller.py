@@ -22,7 +22,7 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
         socket = self.request[1]
         current_thread = threading.current_thread()
         print("{}: client: {}, wrote: {}".format(current_thread.name, self.client_address, data))
-        data = data.decode("utf-8")
+        data = data.decode()
         if data != "":
                         if data in MICRO_COMMANDS: # Send message through UART
                                 sendUARTMessage(data)
@@ -87,12 +87,18 @@ if __name__ == '__main__':
                 print("Server started at {} port {}".format(HOST, UDP_PORT))
                 while ser.isOpen() : 
                         # time.sleep(100)
-                        if (ser.inWaiting() > 0): # if incoming bytes are waiting 
-                                data_str = ser.read(ser.inWaiting()) 
-                                data_str = data_str.decode("utf-8")
-                                f.write(data_str)
-                                LAST_VALUE = data_str
-                                print(data_str)
+                        if ser.in_waiting > 0:
+                                # Read data out of the buffer until a carraige return / new line is found
+                                data_str = ser.readline()
+                                ser.flush()
+
+                                #decode le byte et récupère les données nécéssaires
+                                data_str = data_str.decode()
+                                if(data_str.find("[END]") != -1):
+                                        data = str(data_str)[:data_str.find("[END]")]
+                                        f.write(data)
+                                        LAST_VALUE = data
+                                        print(data)
         except (KeyboardInterrupt, SystemExit):
                 server.shutdown()
                 server.server_close()
