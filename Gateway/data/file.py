@@ -9,7 +9,7 @@ class File(LogSystem):
 
     def save(self, log):
         self.f.write(f"{str(log.__dict__())}\n")
-
+        print(str(log.__dict__()))
         self.last_log = log
 
     def get_last_log(self):
