@@ -9,7 +9,7 @@ import socketserver
 import serial
 import threading
 
-HOST           = "10.17.8.66"
+HOST           = "10.3.0.107"
 UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
 FILENAME        = "log"

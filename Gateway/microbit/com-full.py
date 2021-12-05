@@ -7,12 +7,12 @@ radio.on()
 reseau = reseau.RadioProtocol(2)
 uart.init(baudrate=115200, bits=8, parity=None, stop=1, tx=None, rx=None)
 
-Packet_end = "[END]"
+PACKET_END = "[END]"
 
 while True:
     message = reseau.receivePacket(radio.receive_bytes())
     if message:
-        uart.write(message + Packet_end)
+        uart.write(message + PACKET_END)
     if uart.any():
         content = uart.read()
         packet = content[:2]
