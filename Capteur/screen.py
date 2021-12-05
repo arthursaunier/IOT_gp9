@@ -22,7 +22,8 @@ while True:
     Temp = temperature()
     Lum = display.read_light_level()
     message = reseau.receivePacket(radio.receive_bytes())
-    if message:
+    if (message != 0):
+        display.scroll(message)
         if message == 'TL':
             affichage = 0
         elif message == 'LT':
