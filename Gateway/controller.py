@@ -9,7 +9,7 @@ import socketserver
 import serial
 import threading
 
-HOST           = "10.3.0.107"
+HOST           = "192.168.1.90"
 UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
 FILENAME        = "log"
@@ -104,14 +104,16 @@ if __name__ == '__main__':
 
                                 #decode le byte et récupère les données nécéssaires
                                 data_str = data_str.decode()
-                                if(data_str.find("[END]") != -1):
+                                #verifie présence d'une trame (avec le packet_end présent)
+                                if(data_str.find(PACKET_END) != -1):
+                                        #recup trame en enlevant la fin de la trame
                                         data = str(data_str)[:data_str.find("[END]")]
+                                        #formatage des infos pour sauvegarde dans le fichier/log
                                         parsed = Format.parse(data)
                                         log = Log.from_dict(parsed)
 
                                         #sauvegarde le log ds un fichier
                                         file.save(log)
-                                        #print(data)
         except (KeyboardInterrupt, SystemExit):
                 server.shutdown()
                 server.server_close()
