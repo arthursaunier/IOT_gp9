@@ -23,14 +23,13 @@ while True:
     Lum = display.read_light_level()
     message = reseau.receivePacket(radio.receive_bytes())
     if (message != 0):
-        display.scroll(message)
         if message == 'TL':
-            affichage = 0
-        elif message == 'LT':
             affichage = 1
+        elif message == 'LT':
+            affichage = 0
     if (affichage == 0):
-        add_text(0, 2, "Temp : " + str(Temp) + " C")
-        add_text(0, 1, "Lum : " + str(Lum) + " lm ")
+        add_text(0, 1, "Temp : " + str(Temp) + " C")
+        add_text(0, 2, "Lum : " + str(Lum) + " lm ")
     else:
         add_text(0, 1, "Lum : " + str(Lum) + " lm ")
         add_text(0, 2, "Temp : " + str(Temp) + " C")
