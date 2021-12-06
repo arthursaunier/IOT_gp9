@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             UDPSocket.send(dp);
+                            System.out.println("TL envoyé");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             UDPSocket.send(dp);
+                            System.out.println("LT envoyé");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
         timer.scheduleAtFixedRate( new TimerTask() {
             public void run() {
 
+                System.out.println("timer lancé");
+
                 try{
                     if (EText1.getText().toString().isEmpty()){
                         IP = "127.0.0.1";
@@ -153,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 UDPSocket.send(dp);
+                                System.out.println("update envoyé");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
