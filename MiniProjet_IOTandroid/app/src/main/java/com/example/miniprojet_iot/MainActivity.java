@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         EditText EText2 = findViewById(R.id.editTextTextPersonName2);
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
-        Button button3 = findViewById(R.id.button3);
+        /*Button button3 = findViewById(R.id.button3);
         TextView TView1 = findViewById(R.id.textView1);
-        TextView TView2 = findViewById(R.id.textView2);
+        TextView TView2 = findViewById(R.id.textView2);*/
 
 
         try {
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        button3.setOnClickListener( new View.OnClickListener() {
+        /*button3.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -174,16 +174,17 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        });
-        /*try {
+        });*/
+
+        try {
             AskUpdate();
         } catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
 
     }
 
-    /*private void AskUpdate() {
+    private void AskUpdate() {
         TextView TView1 = findViewById(R.id.textView1);
         TextView TView2 = findViewById(R.id.textView2);
         EditText EText1 = findViewById(R.id.editTextTextPersonName);
@@ -209,13 +210,13 @@ public class MainActivity extends AppCompatActivity {
                     address = InetAddress.getByName(IP);
 
                     String message = "update";
-                    DatagramPacket dp = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
-                    Executor executor = Executors.newSingleThreadExecutor();
-                    executor.execute(new Runnable() {
+                    DatagramPacket dpu = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
+                    Executor executoru = Executors.newSingleThreadExecutor();
+                    executoru.execute(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                UDPSocket.send(dp);
+                                UDPSocket.send(dpu);
                                 System.out.println("update envoyé");
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -247,6 +248,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 5000, 10000);
-    }*/
+    }
 
 }
