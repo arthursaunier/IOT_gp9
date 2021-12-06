@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     if (EText1.getText().toString().isEmpty()){
-                        IP = "127.0.0.1";
+                        IP = "192.168.1.90";
                     }else{
                         IP = EText1.getText().toString();
                     }
                     if (EText2.getText().toString().isEmpty()){
-                        PORT = 8080;
+                        PORT = 10000;
                     }else{
                         PORT = Integer.parseInt(EText2.getText().toString());
                     }
@@ -89,12 +89,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     if (EText1.getText().toString().isEmpty()){
-                        IP = "127.0.0.1";
+                        IP = "192.168.1.90";
                     }else{
                         IP = EText1.getText().toString();
                     }
                     if (EText2.getText().toString().isEmpty()){
-                        PORT = 8080;
+                        PORT = 10000;
                     }else{
                         PORT = Integer.parseInt(EText2.getText().toString());
                     }
@@ -119,8 +119,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AskUpdate();
-
+        try {
+            AskUpdate();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -138,12 +141,12 @@ public class MainActivity extends AppCompatActivity {
 
                 try{
                     if (EText1.getText().toString().isEmpty()){
-                        IP = "127.0.0.1";
+                        IP = "192.168.1.90";
                     }else{
                         IP = EText1.getText().toString();
                     }
                     if (EText2.getText().toString().isEmpty()){
-                        PORT = 8080;
+                        PORT = 10000;
                     }else{
                         PORT = Integer.parseInt(EText2.getText().toString());
                     }
