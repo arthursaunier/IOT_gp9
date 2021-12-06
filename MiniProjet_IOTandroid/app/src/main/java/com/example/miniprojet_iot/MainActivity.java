@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         EditText EText2 = findViewById(R.id.editTextTextPersonName2);
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
+        Button button3 = findViewById(R.id.button3);
+        TextView TView1 = findViewById(R.id.textView1);
+        TextView TView2 = findViewById(R.id.textView2);
 
 
         try {
@@ -54,12 +57,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     if (EText1.getText().toString().isEmpty()){
-                        IP = "127.0.0.1";
+                        IP = "192.168.1.90";
                     }else{
                         IP = EText1.getText().toString();
                     }
                     if (EText2.getText().toString().isEmpty()){
-                        PORT = 8080;
+                        PORT = 10000;
                     }else{
                         PORT = Integer.parseInt(EText2.getText().toString());
                     }
@@ -89,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     if (EText1.getText().toString().isEmpty()){
-                        IP = "127.0.0.1";
+                        IP = "192.168.1.90";
                     }else{
                         IP = EText1.getText().toString();
                     }
                     if (EText2.getText().toString().isEmpty()){
-                        PORT = 8080;
+                        PORT = 10000;
                     }else{
                         PORT = Integer.parseInt(EText2.getText().toString());
                     }
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             UDPSocket.send(dp);
                             System.out.println("LT envoyé");
+                            System.out.println(dp);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -119,12 +123,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AskUpdate();
+        button3.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (EText1.getText().toString().isEmpty()){
+                        IP = "192.168.1.90";
+                    }else{
+                        IP = EText1.getText().toString();
+                    }
+                    if (EText2.getText().toString().isEmpty()){
+                        PORT = 10000;
+                    }else{
+                        PORT = Integer.parseInt(EText2.getText().toString());
+                    }
+                    address = InetAddress.getByName(IP);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                String message = "update";
+                DatagramPacket dp = new DatagramPacket(message.getBytes(StandardCharsets.UTF_8), message.length(),address, PORT);
+                Executor executor = Executors.newSingleThreadExecutor();
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            UDPSocket.send(dp);
+                            System.out.println("update envoyé");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
 
+        byte[] buf = new byte[1024];
+        DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
+        Executor executorrec = Executors.newSingleThreadExecutor();
+        executorrec.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    UDPSocketRec.receive(dprec);
+                    String data = new String(dprec.getData(), 0, dprec.getLength());
+                    String[] valeurs = data.split(":");
+                    TView1.setText(valeurs[0] + "°C");
+                    TView2.setText(valeurs[1] + "UA");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        /*try {
+            AskUpdate();
+        } catch (Exception e){
+            e.printStackTrace();
+        }*/
 
     }
 
-    private void AskUpdate() {
+    /*private void AskUpdate() {
         TextView TView1 = findViewById(R.id.textView1);
         TextView TView2 = findViewById(R.id.textView2);
         EditText EText1 = findViewById(R.id.editTextTextPersonName);
@@ -138,12 +197,12 @@ public class MainActivity extends AppCompatActivity {
 
                 try{
                     if (EText1.getText().toString().isEmpty()){
-                        IP = "127.0.0.1";
+                        IP = "192.168.1.90";
                     }else{
                         IP = EText1.getText().toString();
                     }
                     if (EText2.getText().toString().isEmpty()){
-                        PORT = 8080;
+                        PORT = 10000;
                     }else{
                         PORT = Integer.parseInt(EText2.getText().toString());
                     }
@@ -188,6 +247,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 5000, 10000);
-    }
+    }*/
 
 }
