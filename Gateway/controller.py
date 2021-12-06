@@ -32,22 +32,22 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
         print("{}: client: {}, wrote: {}".format(current_thread.name, self.client_address, data))
         data = data.decode()
         if data != "":
-                        if data in MICRO_COMMANDS: # Send message through UART
-                                #ajoute la fin de packet pour identifier les données
-                                sendUARTMessage(data + PACKET_END)
+                if data in MICRO_COMMANDS: # Send message through UART
+                        #ajoute la fin de packet pour identifier les données
+                        sendUARTMessage(data + PACKET_END)
                                 
-                        elif data == "update": # Sent last value received from micro-controller
-                                print("update received")
-                                #récupère le dernier log venant des microbits
-                                last_log = file.get_last_log()
-                                if last_log != None:
-                                        #formate le log avant envoie a l'appli
-                                        data = Format.reform(last_log)
-                                        print("sending data to app")
-                                        socket.sendto(data, self.client_address) 
+                elif data == "update": # Sent last value received from micro-controller
+                        print("update received")
+                        #récupère le dernier log venant des microbits
+                        last_log = file.get_last_log()
+                        if last_log != None:
+                                #formate le log avant envoie a l'appli
+                                data = Format.reform(last_log)
+                                print("sending data to app")
+                                socket.sendto(data, self.client_address) 
                                      
-                        else:
-                                print("Unknown message: ",data)
+                else:
+                        print("Unknown message: ",data)
 
 class ThreadedUDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
     pass
