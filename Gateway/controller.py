@@ -25,6 +25,7 @@ from data.format import Format
 class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
+        print("request received")
         data = self.request[0].strip()
         socket = self.request[1]
         current_thread = threading.current_thread()
@@ -36,11 +37,13 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
                                 sendUARTMessage(data + PACKET_END)
                                 
                         elif data == "update": # Sent last value received from micro-controller
+                                print("update received")
                                 #récupère le dernier log venant des microbits
                                 last_log = file.get_last_log()
                                 if last_log != None:
                                         #formate le log avant envoie a l'appli
                                         data = Format.reform(last_log)
+                                        print("sending data to app")
                                         socket.sendto(data, self.client_address) 
                                      
                         else:
@@ -117,6 +120,7 @@ if __name__ == '__main__':
 
                                         #sauvegarde le log ds un fichier
                                         file.save(log)
+                                
         except (KeyboardInterrupt, SystemExit):
                 server.shutdown()
                 server.server_close()
