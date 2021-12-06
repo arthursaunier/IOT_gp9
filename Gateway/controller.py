@@ -32,11 +32,14 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
         data = data.decode()
         if data != "":
                         if data in MICRO_COMMANDS: # Send message through UART
+                                #ajoute la fin de packet pour identifier les données
                                 sendUARTMessage(data + PACKET_END)
                                 
                         elif data == "update": # Sent last value received from micro-controller
+                                #récupère le dernier log venant des microbits
                                 last_log = file.get_last_log()
                                 if last_log != None:
+                                        #formate le log avant envoie a l'appli
                                         data = Format.reform(last_log)
                                         socket.sendto(data, self.client_address) 
                                      
