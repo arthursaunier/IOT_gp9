@@ -11,6 +11,10 @@ class Format:
         return dico
 
     @staticmethod
-    def reform(obj):
-        return str(str(obj["temperature"]) + ":" + str(obj["luminosity"]))
+    def reform(str_packet):
+        #{'temperature': '26', 'luminosity': '47', 'create_date': '2021-12-07 09:18:26.039666'}"
+        str_packet = str_packet.replace("{'temperature': '", "")
+        str_packet = str_packet.replace("', 'luminosity': '", ":")
+        str_packet = str_packet[:5]
+        return str(str_packet)
        

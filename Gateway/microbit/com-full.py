@@ -15,9 +15,9 @@ while True:
         uart.write(message + PACKET_END)
     if uart.any():
         content = uart.read()
-        packet = content[:2]
-        if(packet == 'TL'):
+        packet = str(content[:2])
+        if(packet == "b'TL'"):
             reseau.sendPacket("TL", 1)
-        elif(packet == 'LT'):
+        elif(packet == "b'LT'"):
             reseau.sendPacket("LT", 1)
     sleep(1000)
