@@ -19,14 +19,15 @@ oldLum = 0
 affichage = 0
 
 while True:
-    Temp = temperature()
-    Lum = display.read_light_level()
     message = reseau.receivePacket(radio.receive_bytes())
     if (message != 0):
+        display.scroll(message)
         if message == 'TL':
-            affichage = 1
-        elif message == 'LT':
             affichage = 0
+        elif message == 'LT':
+            affichage = 1
+    Temp = temperature()
+    Lum = display.read_light_level()
     if (affichage == 0):
         add_text(0, 1, "Temp : " + str(Temp) + " C")
         add_text(0, 2, "Lum : " + str(Lum) + " lm ")
@@ -37,4 +38,4 @@ while True:
         reseau.sendPacket(str(Temp) + ":"+ str(Lum), 2)
         oldLum = Lum
         oldTemp = Temp
-    sleep(2000)
+        sleep(3000)
