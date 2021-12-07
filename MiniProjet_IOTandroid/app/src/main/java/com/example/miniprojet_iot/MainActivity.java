@@ -4,6 +4,7 @@ import static java.lang.Integer.valueOf;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private DatagramSocket UDPSocket;
     private DatagramSocket UDPSocketRec;
     private Timer timer;
+    public Sync sync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             UDPSocket = new DatagramSocket();
-            UDPSocketRec = new DatagramSocket();
         } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        try {
+            /*AskUpdate();*/
+            sync = new Sync();
+            sync.execute();
+        } catch (Exception e){
             e.printStackTrace();
         }
 
@@ -123,25 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        byte[] buf = new byte[1024];
-        DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
-        Executor executorrec = Executors.newSingleThreadExecutor();
-        executorrec.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    UDPSocketRec.receive(dprec);
-                    String data = new String(dprec.getData(), 0, dprec.getLength());
-                    String[] valeurs = data.split(":");
-                    TView1.setText(valeurs[0] + "°C");
-                    TView2.setText(valeurs[1] + "UA");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        /*button3.setOnClickListener( new View.OnClickListener() {
+        button3.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -176,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        byte[] buf = new byte[1024];
+        /*byte[] buf = new byte[1024];
         DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
         Executor executorrec = Executors.newSingleThreadExecutor();
         executorrec.execute(new Runnable() {
@@ -185,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     UDPSocketRec.receive(dprec);
                     String data = new String(dprec.getData(), 0, dprec.getLength());
-                    String[] valeurs = data.split(":");
+                    String[] valeurs = data.toString().split(":");
                     TView1.setText(valeurs[0] + "°C");
                     TView2.setText(valeurs[1] + "UA");
                 } catch (IOException e) {
@@ -194,15 +185,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        try {
-            AskUpdate();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
     }
 
-    private void AskUpdate() {
+    private class Sync extends AsyncTask<Void, String, Void>{
+
+        TextView TView1 = findViewById(R.id.textView1);
+        TextView TView2 = findViewById(R.id.textView2);
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while (true){
+                try {
+                    System.out.printf("do in back");
+                    byte[] buf = new byte[1024];
+                    DatagramPacket dprec = new DatagramPacket(buf, buf.length);
+                    System.out.println("je suis la ");
+                    UDPSocket.receive(dprec);
+                    System.out.println(dprec);
+                    String data = new String(dprec.getData(), dprec.getOffset(), dprec.getLength());
+                    publishProgress(data);
+                } catch (IOException e) {
+                    System.out.println("erreur");
+                    e.printStackTrace();
+
+                }
+            }
+        }
+
+        protected void onProgressUpdate(String... data) {
+            super.onProgressUpdate(data);
+            System.out.println("on progress");
+            System.out.println(data.toString());
+            System.out.println(data);
+            String[] valeurs = data.toString().split(":");
+            TView1.setText(/*valeurs[0]*/  "°C");
+            TView2.setText(/*valeurs[1] */ "UA");
+        }
+    }
+
+
+    /*private void AskUpdate() {
         TextView TView1 = findViewById(R.id.textView1);
         TextView TView2 = findViewById(R.id.textView2);
         EditText EText1 = findViewById(R.id.editTextTextPersonName);
@@ -250,6 +272,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 5000, 10000);
-    }
+    }*/
 
 }
