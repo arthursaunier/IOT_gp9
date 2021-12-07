@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private int PORT;
     private InetAddress address;
     private DatagramSocket UDPSocket;
-    private DatagramSocket UDPSocketRec;
     private Timer timer;
     public Sync sync;
 
@@ -44,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
         Button button3 = findViewById(R.id.button3);
-        TextView TView1 = findViewById(R.id.textView1);
-        TextView TView2 = findViewById(R.id.textView2);
+        /*TextView TView1 = findViewById(R.id.textView1);
+        TextView TView2 = findViewById(R.id.textView2);*/
 
 
         try {
@@ -54,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         try {
-            /*AskUpdate();*/
+            AskUpdate();
             sync = new Sync();
             sync.execute();
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        button1.setOnClickListener( new View.OnClickListener() {
+        button1.setOnClickListener( new View.OnClickListener() { /*Bouton pour envoyer TL à la passerelle*/
             @Override
             public void onClick(View v) {
                 try {
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        button2.setOnClickListener( new View.OnClickListener() {
+        button2.setOnClickListener( new View.OnClickListener() { /*Bouton pour envoyer LT à la passerelle*/
             @Override
             public void onClick(View v) {
                 try {
@@ -132,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        button3.setOnClickListener( new View.OnClickListener() {
+        button3.setOnClickListener( new View.OnClickListener() { /*Bouton pour envoyer update à la passerelle (
+                                                                En cas de pb avec le timer) afin que celle ci lui renvoie les données*/
             @Override
             public void onClick(View v) {
                 try {
@@ -167,7 +167,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*byte[] buf = new byte[1024];
+        /* Code pour recevoir les message de la passerelle avec executor au lieu de AsyncTask
+        byte[] buf = new byte[1024];
         DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
         Executor executorrec = Executors.newSingleThreadExecutor();
         executorrec.execute(new Runnable() {
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class Sync extends AsyncTask<Void, String, Void>{
+    private class Sync extends AsyncTask<Void, byte[], Void>{ /*AsyncTask pour recevoir les messages tout le temps*/
 
         TextView TView1 = findViewById(R.id.textView1);
         TextView TView2 = findViewById(R.id.textView2);
@@ -196,37 +197,27 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             while (true){
                 try {
-                    System.out.printf("do in back");
                     byte[] buf = new byte[1024];
                     DatagramPacket dprec = new DatagramPacket(buf, buf.length);
-                    System.out.println("je suis la ");
                     UDPSocket.receive(dprec);
-                    System.out.println(dprec);
-                    String data = new String(dprec.getData(), dprec.getOffset(), dprec.getLength());
-                    publishProgress(data);
+                    int size = dprec.getData().length;
+                    publishProgress(Arrays.copyOf(buf, size));
                 } catch (IOException e) {
-                    System.out.println("erreur");
                     e.printStackTrace();
-
                 }
             }
         }
 
-        protected void onProgressUpdate(String... data) {
-            super.onProgressUpdate(data);
-            System.out.println("on progress");
-            System.out.println(data.toString());
-            System.out.println(data);
-            String[] valeurs = data.toString().split(":");
-            TView1.setText(/*valeurs[0]*/  "°C");
-            TView2.setText(/*valeurs[1] */ "UA");
+        protected void onProgressUpdate(byte[]... data) {
+            String a = new String(data[0]);
+            String[] valeurs = a.split(":");
+            TView1.setText(valeurs[0] + "°C");
+            TView2.setText(valeurs[1] + "UA");
         }
     }
 
 
-    /*private void AskUpdate() {
-        TextView TView1 = findViewById(R.id.textView1);
-        TextView TView2 = findViewById(R.id.textView2);
+    private void AskUpdate() { /*timer sui permet d'envoyer update a la passerelle toutes les secondes afin que celle ci lui envoie les données*/
         EditText EText1 = findViewById(R.id.editTextTextPersonName);
         EditText EText2 = findViewById(R.id.editTextTextPersonName2);
         timer = new Timer();
@@ -272,6 +263,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, 5000, 10000);
-    }*/
+    }
 
 }
