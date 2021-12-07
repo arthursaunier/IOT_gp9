@@ -9,7 +9,7 @@ import socketserver
 import serial
 import threading
 
-HOST           = "192.168.1.90"
+HOST           = "192.168.3.119"
 UDP_PORT       = 10000
 MICRO_COMMANDS = ["TL" , "LT"]
 FILENAME        = "log"
@@ -42,7 +42,7 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
                         last_log = file.get_last_log()
                         if last_log != None:
                                 #formate le log avant envoie a l'appli
-                                data = Format.reform(last_log)
+                                data = (Log.__str__(last_log)).encode()
                                 print("sending data to app")
                                 socket.sendto(data, self.client_address) 
                                      

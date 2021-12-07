@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         EditText EText2 = findViewById(R.id.editTextTextPersonName2);
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
-        /*Button button3 = findViewById(R.id.button3);
+        Button button3 = findViewById(R.id.button3);
         TextView TView1 = findViewById(R.id.textView1);
-        TextView TView2 = findViewById(R.id.textView2);*/
+        TextView TView2 = findViewById(R.id.textView2);
 
 
         try {
@@ -120,6 +120,24 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+
+        byte[] buf = new byte[1024];
+        DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
+        Executor executorrec = Executors.newSingleThreadExecutor();
+        executorrec.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    UDPSocketRec.receive(dprec);
+                    String data = new String(dprec.getData(), 0, dprec.getLength());
+                    String[] valeurs = data.split(":");
+                    TView1.setText(valeurs[0] + "°C");
+                    TView2.setText(valeurs[1] + "UA");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -224,23 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    byte[] buf = new byte[1024];
-                    DatagramPacket dprec = new DatagramPacket(buf, 1024, address, PORT);
-                    Executor executorrec = Executors.newSingleThreadExecutor();
-                    executorrec.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                UDPSocketRec.receive(dprec);
-                                String data = new String(dprec.getData(), 0, dprec.getLength());
-                                String[] valeurs = data.split(":");
-                                TView1.setText(valeurs[0] + "°C");
-                                TView2.setText(valeurs[1] + "UA");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+
                 }
                 catch (Exception e) {
                     e.printStackTrace();
